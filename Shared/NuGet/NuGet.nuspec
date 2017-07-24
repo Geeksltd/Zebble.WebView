@@ -5,7 +5,7 @@
     <version>4.1.214</version>
     <title>WebView for Zebble for Xamarin</title>
     <description>Displays Html content and web pages for Zebble for Xamarin.</description>
-    <iconUrl>https://raw.githubusercontent.com/{MyUserName}/{MyRepo}/.../Shared/Icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png</iconUrl>
     <authors>Mobile App Technologies Ltd</authors>
     <owners>Mobile App Technologies Ltd</owners>
     <copyright>Copyright ©2017 | Mobile App Technologies Ltd</copyright>
@@ -27,8 +27,8 @@
 
   </metadata>
   <files>
-    <file src="..\lib\Zebble.WebView.iOS.*" target="lib\Xamarin.iOS10\" />
-    <file src="..\lib\Zebble.WebView.Android.*" target="lib\MonoAndroid10\" />
-    <file src="..\lib\Zebble.WebView.UWP.*" target="lib\UAP10\" />
+    <file src="..\..\lib\Zebble.WebView.iOS.*" target="lib\Xamarin.iOS10\" />
+    <file src="..\..\lib\Zebble.WebView.Android.*" target="lib\MonoAndroid10\" />
+    <file src="..\..\lib\Zebble.WebView.UWP.*" target="lib\UAP10\" />
   </files>
 </package>
