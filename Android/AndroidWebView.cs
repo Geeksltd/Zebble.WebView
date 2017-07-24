@@ -1,0 +1,144 @@
+namespace Zebble.Plugin.Renderer
+{
+    using System;
+    using System.ComponentModel;
+    using System.Threading.Tasks;
+    using Android.Runtime;
+    using Android.Views;
+    using Android.Webkit;
+    using Java.Interop;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public class AndroidWebView : WebView
+    {
+        AndroidWebViewClient Client;
+
+        public Zebble.Plugin.WebView View;
+        public JavaScriptResult JavascriptInterface;
+
+        public AndroidWebView(Zebble.Plugin.WebView view) : base(UIRuntime.CurrentActivity)
+        {
+            View = view;
+
+            Settings.JavaScriptEnabled = true;
+            AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
+            SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
+
+            View.SourceChanged.HandleActionOn(Device.UIThread, Refresh);
+            View.EvaluatedJavascript += s => Device.UIThread.Run(() => EvaluateJavascript(s));
+            View.EvaluatedJavascriptFunction += (s, a) => Device.UIThread.Run(() =>
+            {
+                EvaluateJavascriptFunction(s, a);
+                return Task.FromResult("");
+            });
+            Refresh();
+        }
+
+        async Task<string> EvaluateJavascript(string script) => await Client.EvaluateJavascript(script);
+
+        void EvaluateJavascriptFunction(string function, string[] args) => Client.EvaluateJavascriptFunction(function, args);
+
+        void Refresh()
+        {
+            if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
+
+            if (View.Html.HasValue())
+                LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            Client?.Dispose();
+            Client = null;
+            View = null;
+        }
+
+        public override bool OnTouchEvent(MotionEvent eventArgs)
+        {
+            //Enable scrolling inside WebView when placed in a ScrollView
+            RequestDisallowInterceptTouchEvent(disallowIntercept: true);
+            return base.OnTouchEvent(eventArgs);
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    class AndroidWebViewClient : WebViewClient
+    {
+        public AndroidWebView WebView;
+
+        public AndroidWebViewClient() : base() { }
+
+        public override async void OnPageFinished(Android.Webkit.WebView native, string url)
+        {
+            await WebView.View.LoadFinished.RaiseOn(Device.ThreadPool);
+
+            var absoluteUri = new Uri(url).AbsoluteUri;
+            if (absoluteUri != WebView.View.Url)
+            {
+                var html = await EvaluateJavascript("document.body.innerHTML");
+                WebView.View.OnBrowserNavigated(url, html);
+            }
+
+            base.OnPageFinished(native, url);
+        }
+
+        public override async void OnReceivedError(WebView native, [GeneratedEnum] ClientError errorCode,
+            string description, string failingUrl)
+        {
+            await WebView.View.LoadingError.RaiseOn(Device.ThreadPool, description);
+            base.OnReceivedError(native, errorCode, description, failingUrl);
+        }
+
+        public override bool ShouldOverrideUrlLoading(WebView native, string url)
+        {
+            if (url.HasValue() && WebView.View.OnBrowserNavigating(url)) return true;
+            return base.ShouldOverrideUrlLoading(native, url);
+        }
+
+        public Task<string> EvaluateJavascript(string script)
+        {
+            WebView.LoadUrl("javascript:JsInterface.Run(" + script + ")");
+            return WebView.JavascriptInterface.TaskSource.Task;
+        }
+
+        public void EvaluateJavascriptFunction(string function, string[] args)
+        {
+            WebView.LoadUrl("javascript:" + function + "(" + args.ToString(",") + ")");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            WebView = null;
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public class JavaScriptResult : Java.Lang.Object
+    {
+        Zebble.Plugin.WebView View;
+
+        public TaskCompletionSource<string> TaskSource = new TaskCompletionSource<string>();
+
+        public JavaScriptResult(Zebble.Plugin.WebView view) => View = view;
+
+        public JavaScriptResult(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
+
+        [Export, JavascriptInterface]
+        public void Run(string scriptResult)
+        {
+            var oldSource = TaskSource;
+            TaskSource = new TaskCompletionSource<string>();
+            oldSource.TrySetResult(scriptResult);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            View = null;
+            TaskSource = null;
+            base.Dispose(disposing);
+        }
+    }
+}
