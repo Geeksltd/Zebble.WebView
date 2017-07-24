@@ -13,6 +13,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)WebView.NavigatingEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.ResourceInliner.cs" />
     <None Include="$(MSBuildThisFileDirectory)Icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\CreatePackage.bat" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\NuGet.exe" />
     <None Include="$(MSBuildThisFileDirectory)NuGet\NuGet.nuspec" />
   </ItemGroup>
 </Project>
