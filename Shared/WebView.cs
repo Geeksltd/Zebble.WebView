@@ -4,7 +4,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    public partial class WebView : View, FormField.IControl
+    public partial class WebView : CustomRenderedView<Renderer.WebViewRenderer>, FormField.IControl
     {
         string url, html, ResourceNamespace;
         Assembly ResourceAssembly;
