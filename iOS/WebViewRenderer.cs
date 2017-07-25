@@ -1,21 +1,19 @@
 namespace Zebble.Plugin.Renderer
 {
+    using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
     using UIKit;
     using Zebble;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class WebViewRenderer : ICustomRenderer
+    public class WebViewRenderer : INativeRenderer
     {
-        Plugin.WebView View;
         UIView Result;
 
-        public Task<UIView> Render(object view)
+        public Task<UIView> Render(Renderer renderer)
         {
-            View = (Plugin.WebView)view;
-            Result = new IosWebView(View);
-
+            Result = new IosWebView((WebView)renderer.View);
             return Task.FromResult(Result);
         }
 
@@ -23,7 +21,6 @@ namespace Zebble.Plugin.Renderer
         {
             Result?.Dispose();
             Result = null;
-            View = null;
         }
     }
 }

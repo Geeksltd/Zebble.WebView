@@ -7,14 +7,14 @@ namespace Zebble.Plugin.Renderer
     using controls = Windows.UI.Xaml.Controls;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial class WebViewRenderer : ICustomRenderer
+    public partial class WebViewRenderer : INativeRenderer
     {
         WebView View;
         controls.WebView Result;
 
-        public async Task<FrameworkElement> Render(object view)
+        public async Task<FrameworkElement> Render(Zebble.Renderer renderer)
         {
-            View = (WebView)view;
+            View = (WebView)renderer.View;
 
             View.SourceChanged.HandleOn(Device.UIThread, () => Reload());
             View.EvaluatedJavascript += x => Device.UIThread.Run(() => EvaluateJavascript(x));
@@ -104,5 +104,7 @@ namespace Zebble.Plugin.Renderer
             Result = null;
             View = null;
         }
+
+
     }
 }

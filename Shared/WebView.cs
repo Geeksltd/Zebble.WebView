@@ -4,7 +4,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    public partial class WebView : CustomRenderedView<Renderer.WebViewRenderer>, FormField.IControl
+    public partial class WebView : View, IRenderedBy<Renderer.WebViewRenderer>, FormField.IControl
     {
         string url, html, ResourceNamespace;
         Assembly ResourceAssembly;
@@ -105,7 +105,7 @@
             }
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             LoadingError?.Dispose();
             LoadFinished?.Dispose();

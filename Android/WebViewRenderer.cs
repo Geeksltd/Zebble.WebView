@@ -5,16 +5,13 @@ namespace Zebble.Plugin.Renderer
     using Zebble;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class WebViewRenderer : ICustomRenderer
+    public class WebViewRenderer : INativeRenderer
     {
-        Plugin.WebView View;
         Android.Views.View Result;
 
-        public Task<Android.Views.View> Render(object view)
+        public Task<Android.Views.View> Render(Renderer renderer)
         {
-            View = (Plugin.WebView)view;
-            Result = new AndroidWebView(View);
-
+            Result = new AndroidWebView((WebView)renderer.View);
             return Task.FromResult(Result);
         }
 
@@ -22,7 +19,6 @@ namespace Zebble.Plugin.Renderer
         {
             Result?.Dispose();
             Result = null;
-            View = null;
         }
     }
 }
