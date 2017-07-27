@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.Plugin.WebView</id>
-    <version>4.1.216</version>
+    <version>4.1.218</version>
     <title>WebView for Zebble for Xamarin</title>
     <description>Displays Html content and web pages for Zebble for Xamarin.</description>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png</iconUrl>
@@ -16,11 +16,9 @@
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
       </group>
       <group targetFramework="MonoAndroid">
-        <dependency id="Zebble" version= "4.0.239"/>
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
       </group>
       <group targetFramework="Xamarin.iOS10">
-        <dependency id="Zebble" version= "4.0.239"/>
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
       </group>
     </dependencies>
