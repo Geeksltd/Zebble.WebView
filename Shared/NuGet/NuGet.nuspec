@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>Zebble.Plugin.WebView</id>
-    <version>4.1.228</version>
+    <id>Zebble.WebView</id>
+    <version>4.1.231</version>
     <title>WebView for Zebble (Xamarin)</title>
     <description>Displays Html content and web pages for Zebble.</description>
     <projectUrl>https://github.com/Geeksltd/Zebble.WebView</projectUrl>
