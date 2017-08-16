@@ -1,10 +1,7 @@
 namespace Zebble
 {
-    using System.ComponentModel;
     using System.Threading.Tasks;
-    using Zebble;
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     class WebViewRenderer : INativeRenderer
     {
         Android.Views.View Result;

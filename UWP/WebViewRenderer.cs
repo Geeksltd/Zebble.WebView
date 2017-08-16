@@ -1,18 +1,16 @@
 namespace Zebble
 {
     using System;
-    using System.ComponentModel;
     using System.Threading.Tasks;
     using Windows.UI.Xaml;
     using controls = Windows.UI.Xaml.Controls;
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     partial class WebViewRenderer : INativeRenderer
     {
         WebView View;
         controls.WebView Result;
 
-        public async Task<FrameworkElement> Render(Zebble.Renderer renderer)
+        public async Task<FrameworkElement> Render(Renderer renderer)
         {
             View = (WebView)renderer.View;
 

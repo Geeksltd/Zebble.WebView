@@ -1,12 +1,10 @@
 namespace Zebble
 {
     using System;
-    using System.ComponentModel;
     using System.Threading.Tasks;
     using Foundation;
     using WebKit;
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     class IosWebView : WKWebView
     {
         WebView View;

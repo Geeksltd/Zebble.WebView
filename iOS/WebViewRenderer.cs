@@ -1,12 +1,8 @@
 namespace Zebble
 {
-    using System;
-    using System.ComponentModel;
     using System.Threading.Tasks;
     using UIKit;
-    using Zebble;
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     class WebViewRenderer : INativeRenderer
     {
         UIView Result;
