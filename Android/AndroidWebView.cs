@@ -1,4 +1,4 @@
-namespace Zebble.Plugin.Renderer
+namespace Zebble
 {
     using System;
     using System.ComponentModel;
@@ -8,15 +8,14 @@ namespace Zebble.Plugin.Renderer
     using Android.Webkit;
     using Java.Interop;
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class AndroidWebView : WebView
+    class AndroidWebView : Android.Webkit.WebView
     {
         AndroidWebViewClient Client;
 
-        public Zebble.Plugin.WebView View;
+        public WebView View;
         public JavaScriptResult JavascriptInterface;
 
-        public AndroidWebView(Zebble.Plugin.WebView view) : base(UIRuntime.CurrentActivity)
+        public AndroidWebView(WebView view) : base(UIRuntime.CurrentActivity)
         {
             View = view;
 
@@ -63,7 +62,6 @@ namespace Zebble.Plugin.Renderer
         }
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     class AndroidWebViewClient : WebViewClient
     {
         public AndroidWebView WebView;
@@ -84,14 +82,14 @@ namespace Zebble.Plugin.Renderer
             base.OnPageFinished(native, url);
         }
 
-        public override async void OnReceivedError(WebView native, [GeneratedEnum] ClientError errorCode,
+        public override async void OnReceivedError(Android.Webkit.WebView native, [GeneratedEnum] ClientError errorCode,
             string description, string failingUrl)
         {
             await WebView.View.LoadingError.RaiseOn(Device.ThreadPool, description);
             base.OnReceivedError(native, errorCode, description, failingUrl);
         }
 
-        public override bool ShouldOverrideUrlLoading(WebView native, string url)
+        public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView native, string url)
         {
             if (url.HasValue() && WebView.View.OnBrowserNavigating(url)) return true;
             return base.ShouldOverrideUrlLoading(native, url);
@@ -115,14 +113,13 @@ namespace Zebble.Plugin.Renderer
         }
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class JavaScriptResult : Java.Lang.Object
+    class JavaScriptResult : Java.Lang.Object
     {
-        Zebble.Plugin.WebView View;
+        Zebble.WebView View;
 
         public TaskCompletionSource<string> TaskSource = new TaskCompletionSource<string>();
 
-        public JavaScriptResult(Zebble.Plugin.WebView view) => View = view;
+        public JavaScriptResult(Zebble.WebView view) => View = view;
 
         public JavaScriptResult(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
 

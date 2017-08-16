@@ -1,11 +1,11 @@
-namespace Zebble.Plugin.Renderer
+namespace Zebble
 {
     using System.ComponentModel;
     using System.Threading.Tasks;
     using Zebble;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class WebViewRenderer : INativeRenderer
+    class WebViewRenderer : INativeRenderer
     {
         Android.Views.View Result;
 

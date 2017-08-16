@@ -1,4 +1,4 @@
-namespace Zebble.Plugin.Renderer
+namespace Zebble
 {
     using System;
     using System.ComponentModel;
@@ -7,7 +7,7 @@ namespace Zebble.Plugin.Renderer
     using Zebble;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class WebViewRenderer : INativeRenderer
+    class WebViewRenderer : INativeRenderer
     {
         UIView Result;
 

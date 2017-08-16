@@ -1,10 +1,10 @@
-﻿namespace Zebble.Plugin
+﻿namespace Zebble
 {
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
 
-    public partial class WebView : View, IRenderedBy<Renderer.WebViewRenderer>, FormField.IControl
+    public partial class WebView : View, IRenderedBy<WebViewRenderer>, FormField.IControl
     {
         string url, html, ResourceNamespace;
         Assembly ResourceAssembly;

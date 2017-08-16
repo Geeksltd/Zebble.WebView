@@ -1,4 +1,4 @@
-namespace Zebble.Plugin.Renderer
+namespace Zebble
 {
     using System;
     using System.ComponentModel;
@@ -7,7 +7,7 @@ namespace Zebble.Plugin.Renderer
     using controls = Windows.UI.Xaml.Controls;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial class WebViewRenderer : INativeRenderer
+    partial class WebViewRenderer : INativeRenderer
     {
         WebView View;
         controls.WebView Result;

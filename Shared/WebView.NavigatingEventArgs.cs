@@ -1,4 +1,4 @@
-﻿namespace Zebble.Plugin
+﻿namespace Zebble
 {
     partial class WebView
     {
