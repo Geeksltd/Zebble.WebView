@@ -8,7 +8,7 @@ namespace Zebble
 
         public Task<Android.Views.View> Render(Renderer renderer)
         {
-            Result = new AndroidWebView((WebView)renderer.View);
+            Result = new WebViewContainer((WebView)renderer.View);
             return Task.FromResult(Result);
         }
 

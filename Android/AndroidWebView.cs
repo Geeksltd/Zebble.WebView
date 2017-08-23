@@ -7,6 +7,15 @@ namespace Zebble
     using Android.Webkit;
     using Java.Interop;
 
+    class WebViewContainer : Android.Widget.LinearLayout
+    {
+        public WebViewContainer(WebView view) : base(UIRuntime.CurrentActivity)
+        {
+            SetPadding(1, 1, 1, 1);
+            AddView(new AndroidWebView(view));
+        }
+    }
+
     class AndroidWebView : Android.Webkit.WebView
     {
         AndroidWebViewClient Client;
@@ -29,6 +38,7 @@ namespace Zebble
                 EvaluateJavascriptFunction(s, a);
                 return Task.FromResult("");
             });
+
             Refresh();
         }
 
@@ -39,9 +49,7 @@ namespace Zebble
         void Refresh()
         {
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
-
-            if (View.Html.HasValue())
-                LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
+            else LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
         }
 
         protected override void Dispose(bool disposing)
