@@ -8,44 +8,14 @@ namespace Zebble
     using Java.Interop;
     using Zebble.AndroidOS;
 
-    class WebViewContainer : Android.Widget.LinearLayout
-    {
-        WebView View;
-        public WebViewContainer(WebView view) : base(UIRuntime.CurrentActivity)
-        {
-            View = view;
-            ApplyBorderAsPadding();
-            view.BorderChanged.HandleWith(ApplyBorderAsPadding);
-            AddView(new AndroidWebView(view));
-        }
-
-        void ApplyBorderAsPadding()
-        {
-            var effectiveBorder = View.Border;
-
-            var left = View.Padding.Left.CurrentValue + effectiveBorder.Left;
-            var top = View.Padding.Top.CurrentValue + effectiveBorder.Top;
-            var right = View.Padding.Right.CurrentValue + effectiveBorder.Right;
-            var bottom = View.Padding.Bottom.CurrentValue + effectiveBorder.Bottom;
-
-            SetPadding(Scaler.ToDevice(left), Scaler.ToDevice(top), Scaler.ToDevice(right), Scaler.ToDevice(bottom));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            View = null;
-            base.Dispose(disposing);
-        }
-    }
-
-    class AndroidWebView : Android.Webkit.WebView
+    class AndroidWebView : Android.Webkit.WebView, IZebbleAndroidControl
     {
         AndroidWebViewClient Client;
 
-        public WebView View;
+        public Zebble.WebView View;
         public JavaScriptResult JavascriptInterface;
 
-        public AndroidWebView(WebView view) : base(UIRuntime.CurrentActivity)
+        public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity)
         {
             View = view;
 
@@ -63,6 +33,8 @@ namespace Zebble
 
             Refresh();
         }
+
+        public Task<Android.Views.View> Render() => Task.FromResult<Android.Views.View>(this);
 
         async Task<string> EvaluateJavascript(string script) => await Client.EvaluateJavascript(script);
 

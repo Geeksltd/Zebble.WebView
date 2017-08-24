@@ -1,15 +1,18 @@
 namespace Zebble
 {
     using System.Threading.Tasks;
+    using Zebble.AndroidOS;
 
     class WebViewRenderer : INativeRenderer
     {
         Android.Views.View Result;
 
-        public Task<Android.Views.View> Render(Renderer renderer)
+        public async Task<Android.Views.View> Render(Renderer renderer)
         {
-            Result = new WebViewContainer((WebView)renderer.View);
-            return Task.FromResult(Result);
+            var view = (WebView)renderer.View;
+            var wrapper = new AndroidControlWrapper<AndroidWebView>(view, new AndroidWebView(view));
+            Result = await (wrapper as IZebbleAndroidControl).Render();
+            return Result;
         }
 
         public void Dispose()
