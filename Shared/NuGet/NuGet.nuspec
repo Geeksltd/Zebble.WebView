@@ -7,9 +7,9 @@
     <description>Displays Html content and web pages for Zebble.</description>
     <projectUrl>https://github.com/Geeksltd/Zebble.WebView</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png</iconUrl>
-    <authors>Mobile App Technologies Ltd</authors>
-    <owners>Mobile App Technologies Ltd</owners>
-    <copyright>Copyright ©2017 | Mobile App Technologies Ltd</copyright>
+    <authors>Geeks Ltd</authors>
+    <owners>Geeks Ltd</owners>
+    <copyright>Copyright ©2017 | Geeks Ltd</copyright>
     <dependencies>
       <group targetFramework="UAP10">
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
