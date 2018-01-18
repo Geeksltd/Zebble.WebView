@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
-    "HtmlAgilityPack": "1.4.9.5",
+    "HtmlAgilityPack": "1.6.13",
     "Newtonsoft.Json": "9.0.1",
-    "Zebble": "4.2.342"
+    "Zebble": "4.3.100"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10240": {}
   },
   "runtimes": {
     "win10-arm": {},
@@ -16,4 +16,3 @@
     "win10-x64-aot": {}
   }
 }
-

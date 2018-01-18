@@ -14,9 +14,9 @@ namespace Zebble
         {
             View = view;
 
-            View.SourceChanged.HandleActionOn(Device.UIThread, Refresh);
+            View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
             View.EvaluatedJavascript = script => RunJavascript(script);
-            View.EvaluatedJavascriptFunction += (s, a) => Device.UIThread.Run(() => EvaluateJavascriptFunction(s, a));
+            View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(this, View, Request);
         }
@@ -74,16 +74,16 @@ namespace Zebble
                 if (View.BrowserNavigated != null)
                 {
                     var html = await WebView.EvaluateJavaScriptAsync("document.body.innerHTML");
-                    Device.ThreadPool.RunAction(() => View.OnBrowserNavigated(Request.Url.AbsoluteString, html.ToString()));
+                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(Request.Url.AbsoluteString, html.ToString()));
                 }
             }
 
-            await View.LoadFinished.RaiseOn(Device.ThreadPool);
+            await View.LoadFinished.RaiseOn(Thread.Pool);
         }
 
         public override async void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
         {
-            await View.LoadingError.RaiseOn(Device.ThreadPool, error.Description);
+            await View.LoadingError.RaiseOn(Thread.Pool, error.Description);
         }
 
         public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
