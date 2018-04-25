@@ -1,4 +1,4 @@
-[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/NuGet/Icon.png "Zebble.WebView"
+[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png "Zebble.WebView"
 
 
 ## Zebble.WebView
