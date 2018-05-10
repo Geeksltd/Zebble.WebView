@@ -15,7 +15,7 @@ namespace Zebble
             View = view;
 
             View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
-            View.EvaluatedJavascript = script => RunJavascript(script);
+            View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(this, View, Request);
@@ -24,13 +24,13 @@ namespace Zebble
         async Task<string> RunJavascript(string script)
         {
             var result = await EvaluateJavaScriptAsync(script);
-            return result.ToString();
+            return result?.ToString() ?? "";
         }
 
         async Task<string> EvaluateJavascriptFunction(string function, string[] args)
         {
             var result = await EvaluateJavaScriptAsync(function + "(" + args.ToString(",") + ")");
-            return result.ToString();
+            return result?.ToString();
         }
 
         void Refresh()
