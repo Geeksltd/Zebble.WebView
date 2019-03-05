@@ -1,11 +1,11 @@
 namespace Zebble
 {
-    using System;
-    using System.Threading.Tasks;
     using Android.Runtime;
     using Android.Views;
     using Android.Webkit;
     using Java.Interop;
+    using System;
+    using System.Threading.Tasks;
     using Zebble.AndroidOS;
 
     class AndroidWebView : Android.Webkit.WebView, IZebbleAndroidControl
@@ -49,6 +49,9 @@ namespace Zebble
 
         void Refresh()
         {
+            if (View == null || View.IsDisposed || View.IsDisposing)
+                return;
+
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
             else LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
         }
