@@ -14,11 +14,20 @@ namespace Zebble
         {
             View = view;
 
+            view.AllowsInlineMediaPlaybackChanged.HandleOn(Thread.UI, OnAllowsInlineMediaPlaybackChanged);
             View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(this, View, Request);
+        }
+
+        Task OnAllowsInlineMediaPlaybackChanged()
+        {
+            Configuration.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
+            Configuration.AllowsInlineMediaPlayback = View.AllowsInlineMediaPlayback;
+
+            return Task.CompletedTask;
         }
 
         async Task<string> RunJavascript(string script)
