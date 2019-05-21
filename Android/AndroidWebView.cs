@@ -1,11 +1,11 @@
 namespace Zebble
 {
-    using System;
-    using System.Threading.Tasks;
     using Android.Runtime;
     using Android.Views;
     using Android.Webkit;
     using Java.Interop;
+    using System;
+    using System.Threading.Tasks;
     using Zebble.AndroidOS;
 
     class AndroidWebView : Android.Webkit.WebView, IZebbleAndroidControl
@@ -17,21 +17,28 @@ namespace Zebble
 
         public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity)
         {
-            View = view;
-
-            Settings.JavaScriptEnabled = true;
-            AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
-            SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
-
-            View.SourceChanged.HandleActionOn(Device.UIThread, Refresh);
-            View.EvaluatedJavascript += s => Device.UIThread.Run(() => EvaluateJavascript(s));
-            View.EvaluatedJavascriptFunction += (s, a) => Device.UIThread.Run(() =>
+            try
             {
-                EvaluateJavascriptFunction(s, a);
-                return Task.FromResult("");
-            });
+                View = view;
 
-            Refresh();
+                Settings.JavaScriptEnabled = true;
+                AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
+                SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
+
+                View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
+                View.EvaluatedJavascript += s => Thread.UI.Run(() => EvaluateJavascript(s));
+                View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() =>
+                {
+                    EvaluateJavascriptFunction(s, a);
+                    return Task.FromResult("");
+                });
+
+                Refresh();
+            }
+            catch (Exception ex)
+            {
+                Zebble.Alert.Show(ex.Message);
+            }
         }
 
         public Task<Android.Views.View> Render() => Task.FromResult<Android.Views.View>(this);
@@ -42,6 +49,9 @@ namespace Zebble
 
         void Refresh()
         {
+            if (View == null || View.IsDisposed || View.IsDisposing)
+                return;
+
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
             else LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
         }
@@ -72,7 +82,7 @@ namespace Zebble
 
         public override async void OnPageFinished(Android.Webkit.WebView native, string url)
         {
-            await WebView.View.LoadFinished.RaiseOn(Device.ThreadPool);
+            await WebView.View.LoadFinished.RaiseOn(Thread.Pool);
 
             var absoluteUri = new Uri(url).AbsoluteUri;
             if (absoluteUri != WebView.View.Url)
@@ -87,7 +97,7 @@ namespace Zebble
         public override async void OnReceivedError(Android.Webkit.WebView native, [GeneratedEnum] ClientError errorCode,
             string description, string failingUrl)
         {
-            await WebView.View.LoadingError.RaiseOn(Device.ThreadPool, description);
+            await WebView.View.LoadingError.RaiseOn(Thread.Pool, description);
             base.OnReceivedError(native, errorCode, description, failingUrl);
         }
 

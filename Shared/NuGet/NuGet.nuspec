@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.WebView</id>
-    <version>4.2.238</version>
+    <version>4.2.244</version>
     <title>WebView for Zebble (Xamarin)</title>
     <description>Displays Html content and web pages for Zebble.</description>
     <projectUrl>https://github.com/Geeksltd/Zebble.WebView</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png</iconUrl>
-    <authors>Mobile App Technologies Ltd</authors>
-    <owners>Mobile App Technologies Ltd</owners>
-    <copyright>Copyright ©2017 | Mobile App Technologies Ltd</copyright>
+    <authors>Geeks Ltd</authors>
+    <owners>Geeks Ltd</owners>
+    <copyright>Copyright © 2019 Geeks Ltd - All rights reserved.</copyright>
     <dependencies>
       <group targetFramework="UAP10">
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
@@ -25,6 +25,9 @@
   <files>
     <file src="..\..\lib\Zebble.WebView.iOS.*" target="lib\Xamarin.iOS10\" />
     <file src="..\..\lib\Zebble.WebView.Android.*" target="lib\MonoAndroid10\" />
-    <file src="..\..\lib\Zebble.WebView.UWP.*" target="lib\UAP10\" />
+    <file src="..\..\lib\bin\ARM\Release\Zebble.WebView.UWP.*" target="runtimes\win10-arm\lib\uap10.0" />
+    <file src="..\..\lib\bin\x64\Release\Zebble.WebView.UWP.*" target="runtimes\win10-x64\lib\uap10.0" />
+    <file src="..\..\lib\bin\x86\Release\Zebble.WebView.UWP.*" target="runtimes\win10-x86\lib\uap10.0" />
+    <file src="..\..\lib\bin\Release\Zebble.WebView.UWP.*" target="ref\uap10.0" />
   </files>
 </package>

@@ -14,9 +14,9 @@ namespace Zebble
         {
             View = (WebView)renderer.View;
 
-            View.SourceChanged.HandleOn(Device.UIThread, () => Reload());
-            View.EvaluatedJavascript += x => Device.UIThread.Run(() => EvaluateJavascript(x));
-            View.EvaluatedJavascriptFunction += (s, a) => Device.UIThread.Run(() => EvaluateJavascriptFunction(s, a));
+            View.SourceChanged.HandleOn(Thread.UI, () => Reload());
+            View.EvaluatedJavascript += x => Thread.UI.Run(() => EvaluateJavascript(x));
+            View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             CreateBrowser();
             Reload();
 
@@ -28,7 +28,7 @@ namespace Zebble
             SetDefaultUserAgent();
 
             Result = new controls.WebView(controls.WebViewExecutionMode.SeparateThread);
-            Result.Loaded += async (s, e) => await View.LoadFinished.RaiseOn(Device.ThreadPool);
+            Result.Loaded += async (s, e) => await View.LoadFinished.RaiseOn(Thread.Pool);
 
             Result.NavigationStarting += (s, e) =>
             {
@@ -42,7 +42,7 @@ namespace Zebble
                     var html = (await EvaluateJavascript("document.documentElement.outerHTML")).ToStringOrEmpty();
                     var url = e.Uri.ToStringOrEmpty();
 
-                    Device.ThreadPool.RunAction(() => View.OnBrowserNavigated(url, html));
+                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(url, html));
                 }
             };
 
@@ -54,7 +54,7 @@ namespace Zebble
         {
             var error = args.WebErrorStatus.ToString();
 
-            await View.LoadingError.RaiseOn(Device.ThreadPool, error);
+            await View.LoadingError.RaiseOn(Thread.Pool, error);
         }
 
         void Browser_LoadCompleted(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs args)

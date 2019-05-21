@@ -14,23 +14,32 @@ namespace Zebble
         {
             View = view;
 
-            View.SourceChanged.HandleActionOn(Device.UIThread, Refresh);
-            View.EvaluatedJavascript = script => RunJavascript(script);
-            View.EvaluatedJavascriptFunction += (s, a) => Device.UIThread.Run(() => EvaluateJavascriptFunction(s, a));
+            view.AllowsInlineMediaPlaybackChanged.HandleOn(Thread.UI, OnAllowsInlineMediaPlaybackChanged);
+            View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
+            View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
+            View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(this, View, Request);
+        }
+
+        Task OnAllowsInlineMediaPlaybackChanged()
+        {
+            Configuration.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
+            Configuration.AllowsInlineMediaPlayback = View.AllowsInlineMediaPlayback;
+
+            return Task.CompletedTask;
         }
 
         async Task<string> RunJavascript(string script)
         {
             var result = await EvaluateJavaScriptAsync(script);
-            return result.ToString();
+            return result?.ToString() ?? "";
         }
 
         async Task<string> EvaluateJavascriptFunction(string function, string[] args)
         {
             var result = await EvaluateJavaScriptAsync(function + "(" + args.ToString(",") + ")");
-            return result.ToString();
+            return result?.ToString();
         }
 
         void Refresh()
@@ -74,16 +83,16 @@ namespace Zebble
                 if (View.BrowserNavigated != null)
                 {
                     var html = await WebView.EvaluateJavaScriptAsync("document.body.innerHTML");
-                    Device.ThreadPool.RunAction(() => View.OnBrowserNavigated(Request.Url.AbsoluteString, html.ToString()));
+                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(Request.Url.AbsoluteString, html.ToString()));
                 }
             }
 
-            await View.LoadFinished.RaiseOn(Device.ThreadPool);
+            await View.LoadFinished.RaiseOn(Thread.Pool);
         }
 
         public override async void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
         {
-            await View.LoadingError.RaiseOn(Device.ThreadPool, error.Description);
+            await View.LoadingError.RaiseOn(Thread.Pool, error.Description);
         }
 
         public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
