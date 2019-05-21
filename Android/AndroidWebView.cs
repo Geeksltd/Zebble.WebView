@@ -67,6 +67,7 @@ namespace Zebble
     {
         public AndroidWebView WebView;
 
+        [Preserve]
         public AndroidWebViewClient() : base() { }
 
         public override async void OnPageFinished(Android.Webkit.WebView native, string url)

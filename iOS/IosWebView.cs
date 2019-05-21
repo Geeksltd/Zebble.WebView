@@ -1,8 +1,8 @@
 namespace Zebble
 {
+    using Foundation;
     using System;
     using System.Threading.Tasks;
-    using Foundation;
     using WebKit;
 
     class IosWebView : WKWebView
@@ -89,7 +89,11 @@ namespace Zebble
         public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
         {
             var url = webView.Url;
-            if (url != null && url.AbsoluteString.HasValue() && View.OnBrowserNavigating(url.AbsoluteString)) WebView.StopLoading();
+            if (url == null) return;
+            if (url.AbsoluteString.LacksValue()) return;
+
+            if (View.OnBrowserNavigating(url.AbsoluteString))
+                WebView.StopLoading();
         }
     }
 }
