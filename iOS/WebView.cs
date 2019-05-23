@@ -1,5 +1,4 @@
-﻿
-namespace Zebble
+﻿namespace Zebble
 {
     public partial class WebView
     {

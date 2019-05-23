@@ -64,6 +64,7 @@
 
         public bool OnBrowserNavigating(string newUrl)
         {
+            if (!BrowserNavigating.IsHandled()) return false;
             var eventArgs = new NavigatingEventArgs { Cancel = false, Url = newUrl };
             BrowserNavigating.Raise(eventArgs);
             return eventArgs.Cancel;

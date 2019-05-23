@@ -19,7 +19,7 @@ namespace Zebble
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
-            NavigationDelegate = new IosWebViewNavigationDelegate(this, View, Request);
+            NavigationDelegate = new IosWebViewNavigationDelegate(View);
         }
 
         Task OnAllowsInlineMediaPlaybackChanged()
@@ -66,27 +66,23 @@ namespace Zebble
     class IosWebViewNavigationDelegate : WKNavigationDelegate
     {
         WebView View;
-        NSUrlRequest Request;
-        WKWebView WebView;
 
-        public IosWebViewNavigationDelegate(WKWebView webView, WebView view, NSUrlRequest request)
-        {
-            View = view;
-            Request = request;
-            WebView = webView;
-        }
+        public IosWebViewNavigationDelegate(WebView view) => View = view;
 
         public override async void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
         {
-            if (Request.Url?.AbsoluteString != View.Url)
+            var url = webView.Url?.AbsoluteString?.ToString();
+
+            if (url != View.Url)
             {
-                if (View.BrowserNavigated != null)
+                if (View.BrowserNavigated.IsHandled())
                 {
-                    var html = await WebView.EvaluateJavaScriptAsync("document.body.innerHTML");
-                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(Request.Url.AbsoluteString, html.ToString()));
+                    var html = await webView.EvaluateJavaScriptAsync("document.body.innerHTML");
+                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(url, html.ToString()));
                 }
             }
 
+            while (webView.IsLoading) await Task.Delay(Animation.OneFrame);
             await View.LoadFinished.RaiseOn(Thread.Pool);
         }
 
@@ -95,14 +91,12 @@ namespace Zebble
             await View.LoadingError.RaiseOn(Thread.Pool, error.Description);
         }
 
-        public override void DidStartProvisionalNavigation(WKWebView webView, WKNavigation navigation)
+        public override void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
         {
-            var url = webView.Url;
-            if (url == null) return;
-            if (url.AbsoluteString.LacksValue()) return;
+            var url = navigationAction.Request?.Url?.AbsoluteString;
 
-            if (View.OnBrowserNavigating(url.AbsoluteString))
-                WebView.StopLoading();
+            if (View.OnBrowserNavigating(url)) decisionHandler(WKNavigationActionPolicy.Cancel);
+            else decisionHandler(WKNavigationActionPolicy.Allow);
         }
     }
 }

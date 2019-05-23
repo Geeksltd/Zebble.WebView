@@ -37,7 +37,7 @@ namespace Zebble
 
             Result.NavigationCompleted += async (s, e) =>
             {
-                if (View.BrowserNavigated != null)
+                if (View.BrowserNavigated.IsHandled())
                 {
                     var html = (await EvaluateJavascript("document.documentElement.outerHTML")).ToStringOrEmpty();
                     var url = e.Uri.ToStringOrEmpty();

@@ -49,8 +49,7 @@ namespace Zebble
 
         void Refresh()
         {
-            if (View == null || View.IsDisposed || View.IsDisposing)
-                return;
+            if (View == null || View.IsDisposed || View.IsDisposing) return;
 
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
             else LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
@@ -67,7 +66,7 @@ namespace Zebble
 
         public override bool OnTouchEvent(MotionEvent eventArgs)
         {
-            //Enable scrolling inside WebView when placed in a ScrollView
+            // Enable scrolling inside WebView when placed in a ScrollView
             RequestDisallowInterceptTouchEvent(disallowIntercept: true);
             return base.OnTouchEvent(eventArgs);
         }
@@ -85,7 +84,7 @@ namespace Zebble
             await WebView.View.LoadFinished.RaiseOn(Thread.Pool);
 
             var absoluteUri = new Uri(url).AbsoluteUri;
-            if (absoluteUri != WebView.View.Url)
+            if (absoluteUri != WebView.View.Url && WebView.View.BrowserNavigated.IsHandled())
             {
                 var html = await EvaluateJavascript("document.body.innerHTML");
                 WebView.View.OnBrowserNavigated(url, html);
