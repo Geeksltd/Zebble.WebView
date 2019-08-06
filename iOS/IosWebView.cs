@@ -44,12 +44,12 @@ namespace Zebble
 
         void Refresh()
         {
-            if (View.Url?.Contains(":") == true)
+            if (View?.Url?.Contains(":") == true)
             {
                 Request = new NSUrlRequest(new NSUrl(View.Url));
                 LoadRequest(Request);
             }
-            else
+            else if (View != null)
             {
                 Request = new NSUrlRequest();
                 LoadHtmlString(View.GetExecutableHtml().OrEmpty(), null);
