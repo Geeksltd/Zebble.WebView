@@ -9,6 +9,7 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.NavigatingEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.ResourceInliner.cs" />
