@@ -2,6 +2,7 @@ namespace Zebble
 {
     using Foundation;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using WebKit;
 
@@ -38,7 +39,7 @@ namespace Zebble
 
         void EvaluateJavascriptFunction(string function, string[] args)
         {
-            EvaluateJavaScriptAsync(function + "(" + args.ToString(",") + ")").RunInParallel();
+            EvaluateJavaScriptAsync(function + "(" + args.Select(a => a.Contains("`") ? a : "`" + a + "`").ToString(",") + ")").RunInParallel();
         }
 
         void Refresh()

@@ -5,6 +5,7 @@ namespace Zebble
     using Android.Webkit;
     using Java.Interop;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using Zebble.AndroidOS;
 
@@ -110,7 +111,7 @@ namespace Zebble
 
         public void EvaluateJavascriptFunction(string function, string[] args)
         {
-            WebView.LoadUrl("javascript:" + function + "(" + args.ToString(",") + ")");
+            WebView.LoadUrl("javascript:" + function + "(" + args.Select(a => a.Contains("`") ? a : "`" + a + "`").ToString(",") + ")");
         }
 
         protected override void Dispose(bool disposing)
