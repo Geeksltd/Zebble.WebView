@@ -19,7 +19,7 @@
         public readonly AsyncEvent SourceChanged = new AsyncEvent();
 
         internal Func<string, Task<string>> EvaluatedJavascript;
-        internal Func<string, string[], Task<string>> EvaluatedJavascriptFunction;
+        internal Action<string, string[]> InvokeJavascriptFunction;
 
         public WebView() => Css.Height(100);
         public WebView(string url) => Url = url;
@@ -72,7 +72,7 @@
 
         public void EvaluateJavaScript(string script) => EvaluatedJavascript?.Invoke(script);
 
-        public void EvaluateJavaScriptFunction(string function, string[] args) => EvaluatedJavascriptFunction?.Invoke(function, args);
+        public void EvaluateJavaScriptFunction(string function, string[] args) => InvokeJavascriptFunction?.Invoke(function, args);
 
         public string GetExecutableHtml()
         {
@@ -106,7 +106,7 @@
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             LoadingError?.Dispose();
             LoadFinished?.Dispose();
@@ -114,7 +114,7 @@
             SourceChanged?.Dispose();
 
             EvaluatedJavascript = null;
-            EvaluatedJavascriptFunction = null;
+            InvokeJavascriptFunction = null;
 
             base.Dispose();
         }

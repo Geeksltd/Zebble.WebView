@@ -16,7 +16,7 @@ namespace Zebble
 
             View.SourceChanged.HandleOn(Thread.UI, () => Reload());
             View.EvaluatedJavascript += x => Thread.UI.Run(() => EvaluateJavascript(x));
-            View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
+            View.InvokeJavascriptFunction += (s, a) => Thread.UI.Post(() => EvaluateJavascriptFunction(s, a));
             CreateBrowser();
             Reload();
 
@@ -64,9 +64,24 @@ namespace Zebble
 
         Task<string> EvaluateJavascript(string script) => Result.InvokeScriptAsync("eval", new string[] { script }).AsTask();
 
-        Task<string> EvaluateJavascriptFunction(string function, string[] args)
+        async void EvaluateJavascriptFunction(string function, string[] args)
         {
-            return Result.InvokeScriptAsync(function, args).AsTask();
+            try
+            {
+                await Result.InvokeScriptAsync(function, args).AsTask();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "Exception from HRESULT: 0x80020101")
+                {
+                    Device.Log.Error("Syntax error in the javascript invoking function '" + function + "' with params:\n" +
+                        args.ToLinesString());
+                }
+                else
+                {
+                    Device.Log.Error("EvaluateJavascriptFunction() failed: " + ex.ToLogString());
+                }
+            }
         }
 
         public controls.WebView Render() => Result;

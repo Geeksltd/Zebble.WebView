@@ -27,11 +27,7 @@ namespace Zebble
 
                 View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
                 View.EvaluatedJavascript += s => Thread.UI.Run(() => EvaluateJavascript(s));
-                View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() =>
-                {
-                    EvaluateJavascriptFunction(s, a);
-                    return Task.FromResult("");
-                });
+                View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
 
                 Refresh();
             }

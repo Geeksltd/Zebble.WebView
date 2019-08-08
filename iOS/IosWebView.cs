@@ -17,7 +17,7 @@ namespace Zebble
             view.AllowsInlineMediaPlaybackChanged.HandleOn(Thread.UI, OnAllowsInlineMediaPlaybackChanged);
             View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
-            View.EvaluatedJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
+            View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(View);
         }
@@ -36,10 +36,9 @@ namespace Zebble
             return result?.ToString() ?? "";
         }
 
-        async Task<string> EvaluateJavascriptFunction(string function, string[] args)
+        void EvaluateJavascriptFunction(string function, string[] args)
         {
-            var result = await EvaluateJavaScriptAsync(function + "(" + args.ToString(",") + ")");
-            return result?.ToString();
+            EvaluateJavaScriptAsync(function + "(" + args.ToString(",") + ")").RunInParallel();
         }
 
         void Refresh()
