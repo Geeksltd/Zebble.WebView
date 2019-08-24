@@ -16,6 +16,8 @@ namespace Zebble
         public Zebble.WebView View;
         public JavaScriptResult JavascriptInterface;
 
+        public AndroidWebView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
+
         public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity)
         {
             try
@@ -49,7 +51,11 @@ namespace Zebble
             if (View == null || View.IsDisposed || View.IsDisposing) return;
 
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
-            else LoadDataWithBaseURL("", View.GetExecutableHtml().OrEmpty(), "text/html", "utf-8", "");
+            else
+            {
+                var html = View.GetExecutableHtml().OrEmpty();
+                LoadDataWithBaseURL("", html, "text/html", "utf-8", "");
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -97,6 +103,12 @@ namespace Zebble
             base.OnReceivedError(native, errorCode, description, failingUrl);
         }
 
+        public override async void OnReceivedError(Android.Webkit.WebView view, IWebResourceRequest request, WebResourceError error)
+        {
+            await WebView.View.LoadingError.RaiseOn(Thread.Pool, error.Description);
+            base.OnReceivedError(view, request, error);
+        }
+
         public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView native, string url)
         {
             if (url.HasValue() && WebView.View.OnBrowserNavigating(url)) return true;
@@ -111,7 +123,7 @@ namespace Zebble
 
         public void EvaluateJavascriptFunction(string function, string[] args)
         {
-            WebView.LoadUrl("javascript:" + function + "(" + args.Select(a => a.Contains("`") ? a : "`" + a + "`").ToString(",") + ")");
+            WebView.LoadUrl("javascript:" + function + "(" + args.Select(x => x.Escape()).ToString(",") + ")");
         }
 
         protected override void Dispose(bool disposing)

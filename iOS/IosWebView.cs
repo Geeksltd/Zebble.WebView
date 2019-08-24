@@ -39,7 +39,7 @@ namespace Zebble
 
         void EvaluateJavascriptFunction(string function, string[] args)
         {
-            EvaluateJavaScriptAsync(function + "(" + args.Select(a => a.Contains("`") ? a : "`" + a + "`").ToString(",") + ")").RunInParallel();
+            EvaluateJavaScriptAsync(function + "(" + args.Select(x => x.Escape()).ToString(",") + ")").RunInParallel();
         }
 
         void Refresh()

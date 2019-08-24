@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.NavigatingEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WebView.ResourceInliner.cs" />
