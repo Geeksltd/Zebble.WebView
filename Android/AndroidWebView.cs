@@ -16,6 +16,7 @@ namespace Zebble
         public Zebble.WebView View;
         public JavaScriptResult JavascriptInterface;
 
+        [Preserve]
         public AndroidWebView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
         public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity)
@@ -82,6 +83,9 @@ namespace Zebble
         [Preserve]
         public AndroidWebViewClient() : base() { }
 
+        [Preserve]
+        public AndroidWebViewClient(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
+
         public override async void OnPageFinished(Android.Webkit.WebView native, string url)
         {
             await WebView.View.LoadFinished.RaiseOn(Thread.Pool);
@@ -141,6 +145,7 @@ namespace Zebble
 
         public JavaScriptResult(Zebble.WebView view) => View = view;
 
+        [Preserve]
         public JavaScriptResult(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
 
         [Export, JavascriptInterface]
