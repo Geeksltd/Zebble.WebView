@@ -51,6 +51,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="AndroidWebView.cs" />
+    <Compile Include="AndroidWebViewClient.cs" />
+    <Compile Include="JavaScriptResult.cs" />
     <Compile Include="WebViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
