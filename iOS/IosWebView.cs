@@ -10,46 +10,48 @@ namespace Zebble
     {
         WebView View;
         NSUrlRequest Request;
+        bool Dead => View == null || View.IsDisposing;
 
         public IosWebView(WebView view) : base(view.GetFrame(), new WKWebViewConfiguration())
         {
             View = view;
 
-            view.AllowsInlineMediaPlaybackChanged.HandleOn(Thread.UI, OnAllowsInlineMediaPlaybackChanged);
-            View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
+            view.AllowsInlineMediaPlaybackChanged.HandleOnUI(OnAllowsInlineMediaPlaybackChanged);
+            View.SourceChanged.HandleOnUI(Refresh);
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(View);
         }
 
-        Task OnAllowsInlineMediaPlaybackChanged()
+        void OnAllowsInlineMediaPlaybackChanged()
         {
+            if (Dead) return;
             Configuration.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
             Configuration.AllowsInlineMediaPlayback = View.AllowsInlineMediaPlayback;
-
-            return Task.CompletedTask;
         }
 
         async Task<string> RunJavascript(string script)
         {
-            var result = await EvaluateJavaScriptAsync(script);
-            return result?.ToString() ?? "";
+            if (Dead) return "";
+
+            return (await EvaluateJavaScriptAsync(script))?.ToString() ?? "";
         }
 
         void EvaluateJavascriptFunction(string function, string[] args)
         {
             EvaluateJavaScriptAsync(function + "(" + args.Select(x => x.Escape()).ToString(",") + ")").RunInParallel();
         }
-
         void Refresh()
         {
-            if (View?.Url?.Contains(":") == true)
+            if (Dead) return;
+
+            if (View.Url?.Contains(":") == true)
             {
                 Request = new NSUrlRequest(new NSUrl(View.Url));
                 LoadRequest(Request);
             }
-            else if (View != null)
+            else
             {
                 Request = new NSUrlRequest();
                 LoadHtmlString(View.GetExecutableHtml().OrEmpty(), null);
@@ -69,30 +71,47 @@ namespace Zebble
 
         public IosWebViewNavigationDelegate(WebView view) => View = view;
 
+        protected override void Dispose(bool disposing)
+        {
+            View = null;
+            base.Dispose(disposing);
+        }
+
+        bool Dead => View == null || View.IsDisposing;
+
         public override async void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
         {
+            if (Dead) return; // Disposed.
+
             var url = webView.Url?.AbsoluteString?.ToString();
 
-            if (url != View.Url)
+            if (url != View.Url && View.BrowserNavigated.IsHandled())
             {
-                if (View.BrowserNavigated.IsHandled())
-                {
-                    var html = await webView.EvaluateJavaScriptAsync("document.body.innerHTML");
-                    Thread.Pool.RunAction(() => View.OnBrowserNavigated(url, html.ToString()));
-                }
+                var html = await webView.EvaluateJavaScriptAsync("document.body.innerHTML");
+                if (Dead) return;
+
+                View.OnBrowserNavigated(url, html.ToString());
             }
 
             while (webView.IsLoading) await Task.Delay(Animation.OneFrame);
-            await View.LoadFinished.RaiseOn(Thread.Pool);
+            if (!Dead)
+                View.LoadFinished.RaiseOn(Thread.Pool).RunInParallel();
         }
 
-        public override async void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
+        public override void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
         {
-            await View.LoadingError.RaiseOn(Thread.Pool, error.Description);
+            if (Dead) return; // Disposed.
+            View.LoadingError.RaiseOn(Thread.Pool, error.Description);
         }
 
         public override void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
         {
+            if (Dead)
+            {
+                decisionHandler(WKNavigationActionPolicy.Cancel);
+                return; // Disposed.
+            }
+
             var url = navigationAction.Request?.Url?.AbsoluteString;
 
             if (View.OnBrowserNavigating(url)) decisionHandler(WKNavigationActionPolicy.Cancel);

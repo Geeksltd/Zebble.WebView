@@ -12,6 +12,7 @@ namespace Zebble
 
         public Zebble.WebView View;
         public JavaScriptResult JavascriptInterface;
+        internal bool Dead => View == null || View.IsDisposing;
 
         [Preserve]
         public AndroidWebView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
@@ -26,7 +27,7 @@ namespace Zebble
                 AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
                 SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
 
-                View.SourceChanged.HandleActionOn(Thread.UI, Refresh);
+                View.SourceChanged.HandleOnUI( Refresh);
                 View.EvaluatedJavascript += s => Thread.UI.Run(() => EvaluateJavascript(s));
                 View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
 
@@ -46,7 +47,7 @@ namespace Zebble
 
         void Refresh()
         {
-            if (View == null || View.IsDisposed || View.IsDisposing) return;
+            if (Dead) return;
 
             if (View.Url?.Contains(":") == true) LoadUrl(View.Url);
             else

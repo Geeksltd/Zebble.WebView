@@ -9,7 +9,7 @@
     class AndroidWebViewClient : WebViewClient
     {
         public AndroidWebView WebView;
-
+         
         [Preserve]
         public AndroidWebViewClient() : base() { }
 
@@ -51,10 +51,10 @@
 
         bool IsDead(out WebView view)
         {
-            view = WebView?.View;
-            if (view?.IsDisposing == true) view = null;
-
-            return view == null;
+            view = null;
+            if (WebView == null || WebView.Dead) return true;
+            view = WebView.View;
+            return false;
         }
 
         public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView native, string url)
@@ -67,12 +67,14 @@
 
         public Task<string> EvaluateJavascript(string script)
         {
+            if (IsDead(out var v)) return null;
             WebView.LoadUrl("javascript:JsInterface.Run(" + script + ")");
             return WebView.JavascriptInterface.TaskSource.Task;
         }
 
         public void EvaluateJavascriptFunction(string function, string[] args)
         {
+            if (IsDead(out var v)) return ;
             WebView.LoadUrl("javascript:" + function + "(" + args.Select(x => x.Escape()).ToString(",") + ")");
         }
 
