@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.WebView</id>
-    <version>4.3.261</version>
+    <version>4.3.263</version>
     <title>WebView for Zebble (Xamarin)</title>
     <description>Displays Html content and web pages for Zebble.</description>
     <projectUrl>https://github.com/Geeksltd/Zebble.WebView</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.WebView/master/Shared/Icon.png</iconUrl>
     <authors>Geeks Ltd</authors>
     <owners>Geeks Ltd</owners>
-    <copyright>Copyright © 2019 Geeks Ltd - All rights reserved.</copyright>
+    <copyright>Copyright © 2020 Geeks Ltd - All rights reserved.</copyright>
     <dependencies>
       <group targetFramework="UAP10">
         <dependency id="HtmlAgilityPack" version="1.4.9.5" />
@@ -25,6 +25,6 @@
   <files>
     <file src="..\..\lib\Zebble.WebView.iOS.*" target="lib\Xamarin.iOS10\" />
     <file src="..\..\lib\Zebble.WebView.Android.*" target="lib\MonoAndroid10\" />
-    <file src="..\..\lib\Zebble.WebView.UWP.*" target="lib\UAP10\" />    
+    <file src="..\..\lib\Zebble.WebView.UWP.*" target="lib\UAP10\" />
   </files>
 </package>

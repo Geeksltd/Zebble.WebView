@@ -16,7 +16,8 @@ namespace Zebble
         {
             View = view;
 
-            view.AllowsInlineMediaPlaybackChanged.HandleOnUI(OnAllowsInlineMediaPlaybackChanged);
+            View.AllowsInlineMediaPlaybackChanged.HandleOnUI(OnAllowsInlineMediaPlaybackChanged);
+            View.ScrollBouncesChanged.HandleOnUI(OnScrollBouncesChanged);
             View.SourceChanged.HandleOnUI(Refresh);
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
@@ -29,6 +30,12 @@ namespace Zebble
             if (Dead) return;
             Configuration.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
             Configuration.AllowsInlineMediaPlayback = View.AllowsInlineMediaPlayback;
+        }
+
+        void OnScrollBouncesChanged()
+        {
+            if (Dead) return;
+            ScrollView.Bounces = View.Bounces;
         }
 
         async Task<string> RunJavascript(string script)
