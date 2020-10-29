@@ -48,7 +48,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="Zebble.Android, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.4.5.359\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
+      <HintPath>..\..\..\..\..\Nuget\packages\Zebble.4.5.369\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

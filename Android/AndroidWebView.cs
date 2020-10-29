@@ -17,7 +17,7 @@ namespace Zebble
         [Preserve]
         public AndroidWebView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
-        public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity)
+        public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity.ApplicationContext)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Zebble
                 AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
                 SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
 
-                View.SourceChanged.HandleOnUI( Refresh);
+                View.SourceChanged.HandleOnUI(Refresh);
                 View.EvaluatedJavascript += s => Thread.UI.Run(() => EvaluateJavascript(s));
                 View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
 
