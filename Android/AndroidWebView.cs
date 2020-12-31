@@ -5,6 +5,7 @@ namespace Zebble
     using System;
     using System.Threading.Tasks;
     using Zebble.AndroidOS;
+    using Olive;
 
     class AndroidWebView : Android.Webkit.WebView, IZebbleAndroidControl
     {

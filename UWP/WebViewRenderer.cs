@@ -4,6 +4,7 @@ namespace Zebble
     using System.Threading.Tasks;
     using Windows.UI.Xaml;
     using controls = Windows.UI.Xaml.Controls;
+    using Olive;
 
     partial class WebViewRenderer : INativeRenderer
     {

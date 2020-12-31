@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Olive;
 
     partial class WebView
     {
@@ -120,14 +121,14 @@
 
             byte[] ReadResourceBytes(string url)
             {
-                if (url.LacksValue()) return new byte[0];
+                if (url.IsEmpty()) return new byte[0];
 
                 if (url.StartsWith("resource:"))
                 {
                     if (ResourceAssembly == null)
                         throw new Exception($"Failed to load '{url}' as no resourceAssembly is specified for this WebView.");
 
-                    if (ResourceNamespace.LacksValue())
+                    if (ResourceNamespace.IsEmpty())
                         throw new Exception($"Failed to load '{url}' as no resource namespace is specified for this WebView.");
 
                     return ResourceAssembly.ReadEmbeddedResource(ResourceNamespace, url.TrimStart("resource:"));

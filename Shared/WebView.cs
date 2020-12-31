@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Olive;
 
     public partial class WebView : View, IRenderedBy<WebViewRenderer>, FormField.IControl
     {
@@ -80,9 +81,9 @@
             {
                 var html = Html;
 
-                if (html.LacksValue())
+                if (html.IsEmpty())
                 {
-                    if (Url.LacksValue() || Url.Contains(":")) return null;
+                    if (Url.IsEmpty() || Url.Contains(":")) return null;
 
                     var file = Device.IO.File(Url);
                     if (!file.Exists()) return "File not found: " + Url;
@@ -90,7 +91,7 @@
                 }
 
                 if (html.Lacks("<html", caseSensitive: false)) return html;
-                html = html.TrimBefore("<html", caseSensitive: false);
+                html = html.RemoveBefore("<html", caseSensitive: false);
 
                 return new ResourceInliner(html)
                 {
