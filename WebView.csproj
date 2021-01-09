@@ -7,7 +7,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.WebView</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>4.3.265.0</Version>
+    <Version>4.3.266.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
@@ -42,6 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <DefineConstants>ANDROID</DefineConstants>
+    <AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
     <DefineConstants>IOS</DefineConstants>
@@ -66,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
-    <PackageReference Include="Zebble" Version="4.5.423" />
+    <PackageReference Include="Zebble" Version="4.5.436" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />
