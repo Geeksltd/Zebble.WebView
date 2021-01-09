@@ -7,7 +7,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.WebView</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>4.3.266.0</Version>
+    <Version>4.3.267.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
@@ -54,6 +54,7 @@
     <Compile Include="UWP\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+    <Reference Include="Mono.Android.Export" />
     <Compile Include="Android\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
