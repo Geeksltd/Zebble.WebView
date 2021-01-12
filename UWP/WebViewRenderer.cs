@@ -75,12 +75,12 @@ namespace Zebble
             {
                 if (ex.Message == "Exception from HRESULT: 0x80020101")
                 {
-                    Device.Log.Error("Syntax error in the javascript invoking function '" + function + "' with params:\n" +
+                    Log.For(this).Error(ex, "Syntax error in the javascript invoking function '" + function + "' with params:\n" +
                         args.ToLinesString());
                 }
                 else
                 {
-                    Device.Log.Error("EvaluateJavascriptFunction() failed: " + ex.ToLogString());
+                    Log.For(this).Error(ex, "EvaluateJavascriptFunction() failed.");
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace Zebble
             var file = Device.IO.File(path.TrimStart("/").Replace("/", "\\"));
             if (!file.Exists() && file.Extension.OrEmpty().ToLower().IsAnyOf(".gif", ".png", ".jpg", ".jpeg", ".webp"))
             {
-                Device.Log.Error("Image file does not exist: " + file);
+                Log.For(this).Error(null, "Image file does not exist: " + file);
                 return notFond;
             }
 
@@ -118,7 +118,5 @@ namespace Zebble
             Result = null;
             View = null;
         }
-
-
     }
 }
