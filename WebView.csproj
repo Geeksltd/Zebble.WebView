@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
-    <PackageReference Include="Zebble" Version="4.5.445" />
+    <PackageReference Include="Zebble" Version="4.5.447" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />

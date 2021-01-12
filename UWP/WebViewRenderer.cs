@@ -106,7 +106,7 @@ namespace Zebble
             var file = Device.IO.File(path.TrimStart("/").Replace("/", "\\"));
             if (!file.Exists() && file.Extension.OrEmpty().ToLower().IsAnyOf(".gif", ".png", ".jpg", ".jpeg", ".webp"))
             {
-                Log.For(this).Error(null, "Image file does not exist: " + file);
+                Log.For(this).Error("Image file does not exist: " + file);
                 return notFond;
             }
 
