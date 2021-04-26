@@ -11,14 +11,14 @@ namespace Zebble
     {
         AndroidWebViewClient Client;
 
-        public Zebble.WebView View;
+        public WebView View;
         public JavaScriptResult JavascriptInterface;
         internal bool Dead => View == null || View.IsDisposing;
 
         [Preserve]
         public AndroidWebView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
-        public AndroidWebView(Zebble.WebView view) : base(UIRuntime.CurrentActivity.ApplicationContext)
+        public AndroidWebView(WebView view) : base(UIRuntime.CurrentActivity.ApplicationContext)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Zebble
             }
             catch (Exception ex)
             {
-                Zebble.Alert.Show(ex.Message);
+                Alert.Show(ex.Message);
             }
         }
 
