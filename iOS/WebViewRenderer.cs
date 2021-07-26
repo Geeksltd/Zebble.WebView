@@ -9,7 +9,8 @@ namespace Zebble
 
         public Task<UIView> Render(Renderer renderer)
         {
-            Result = new IosWebView((WebView)renderer.View);
+            var view = (WebView)renderer.View;
+            Result = new IosWebView(view, view.WebViewConfiguration);
             return Task.FromResult(Result);
         }
 

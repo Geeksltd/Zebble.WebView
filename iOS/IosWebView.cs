@@ -13,24 +13,16 @@ namespace Zebble
         NSUrlRequest Request;
         bool Dead => View == null || View.IsDisposing;
 
-        public IosWebView(WebView view) : base(view.GetFrame(), new WKWebViewConfiguration())
+        public IosWebView(WebView view, IosWebViewConfiguration configuration) : base(view.GetFrame(), new WKWebViewConfiguration { AllowsInlineMediaPlayback = configuration.AllowsInlineMediaPlayback, MediaTypesRequiringUserActionForPlayback = configuration.MediaTypesRequiringUserActionForPlayback })
         {
             View = view;
 
-            View.AllowsInlineMediaPlaybackChanged.HandleOnUI(OnAllowsInlineMediaPlaybackChanged);
             View.ScrollBouncesChanged.HandleOnUI(OnScrollBouncesChanged);
             View.SourceChanged.HandleOnUI(Refresh);
             View.EvaluatedJavascript = script => Thread.UI.Run(() => RunJavascript(script));
             View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));
             Refresh();
             NavigationDelegate = new IosWebViewNavigationDelegate(View);
-        }
-
-        void OnAllowsInlineMediaPlaybackChanged()
-        {
-            if (Dead) return;
-            Configuration.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
-            Configuration.AllowsInlineMediaPlayback = View.AllowsInlineMediaPlayback;
         }
 
         void OnScrollBouncesChanged()

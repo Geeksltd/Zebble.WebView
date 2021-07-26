@@ -2,20 +2,9 @@
 {
     public partial class WebView
     {
-        internal readonly AsyncEvent AllowsInlineMediaPlaybackChanged = new AsyncEvent();
         internal readonly AsyncEvent ScrollBouncesChanged = new AsyncEvent();
 
-
-        bool allowsInlineMediaPlayback;
-        public bool AllowsInlineMediaPlayback
-        {
-            get => allowsInlineMediaPlayback;
-            set
-            {
-                allowsInlineMediaPlayback = value;
-                AllowsInlineMediaPlaybackChanged.Raise();
-            }
-        }
+        public IosWebViewConfiguration WebViewConfiguration { get; } = new IosWebViewConfiguration();
 
         bool scrollBounces;
         public bool Bounces
@@ -27,5 +16,11 @@
                 ScrollBouncesChanged.Raise();
             }
         }
+    }
+
+    public class IosWebViewConfiguration
+    {
+        public bool AllowsInlineMediaPlayback { get; set; }
+        public WebKit.WKAudiovisualMediaTypes MediaTypesRequiringUserActionForPlayback { get; set; } = WebKit.WKAudiovisualMediaTypes.None;
     }
 }
