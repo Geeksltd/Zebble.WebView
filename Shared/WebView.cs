@@ -72,6 +72,12 @@
         }
 
         public void EvaluateJavaScript(string script) => EvaluatedJavascript?.Invoke(script);
+        /// <summary>
+        /// Run javascript method in webview and get result of function in return
+        /// </summary>
+        /// <param name="script">Script to run</param>
+        /// <returns>Result of javascript function</returns>
+        public Task<string> EvaluateJavaScriptAsync(string script) => EvaluatedJavascript?.Invoke(script);
 
         public void EvaluateJavaScriptFunction(string function, string[] args) => InvokeJavascriptFunction?.Invoke(function, args);
 
