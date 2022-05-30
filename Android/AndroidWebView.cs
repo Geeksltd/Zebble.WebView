@@ -22,12 +22,14 @@ namespace Zebble
         {
             try
             {
+                
                 View = view;
 
                 Settings.JavaScriptEnabled = true;
+                Settings.MediaPlaybackRequiresUserGesture = view.WebViewConfiguration.MediaTypesRequiringUserActionForPlayback;
                 AddJavascriptInterface(JavascriptInterface = new JavaScriptResult(View), "JsInterface");
                 SetWebViewClient(Client = new AndroidWebViewClient { WebView = this });
-
+                
                 View.SourceChanged.HandleOnUI(Refresh);
                 View.EvaluatedJavascript += s => Thread.UI.Run(() => EvaluateJavascript(s));
                 View.InvokeJavascriptFunction += (s, a) => Thread.UI.Run(() => EvaluateJavascriptFunction(s, a));

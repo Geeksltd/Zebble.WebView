@@ -11,7 +11,7 @@
         Assembly ResourceAssembly;
         public readonly AsyncEvent BrowserNavigated = new AsyncEvent();
         public readonly AsyncEvent<NavigatingEventArgs> BrowserNavigating = new AsyncEvent<NavigatingEventArgs>();
-
+        public WebViewConfiguration WebViewConfiguration { get; } = new WebViewConfiguration();
         /// <summary>
         /// Parameters are Error code and error text.
         /// </summary>
@@ -127,4 +127,5 @@
             base.Dispose();
         }
     }
+
 }

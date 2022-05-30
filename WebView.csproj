@@ -75,4 +75,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="update-local-nuget-cache $(TargetDir)" />
   </Target>
+  <ItemGroup>
+    <None Remove="Shared\WebviewConfiguration.cs" />
+  </ItemGroup>
 </Project>

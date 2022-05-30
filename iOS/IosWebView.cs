@@ -13,7 +13,7 @@ namespace Zebble
         NSUrlRequest Request;
         bool Dead => View == null || View.IsDisposing;
 
-        public IosWebView(WebView view, IosWebViewConfiguration configuration) : base(view.GetFrame(), new WKWebViewConfiguration { AllowsInlineMediaPlayback = configuration.AllowsInlineMediaPlayback, MediaTypesRequiringUserActionForPlayback = configuration.MediaTypesRequiringUserActionForPlayback })
+        public IosWebView(WebView view, WebViewConfiguration configuration) : base(view.GetFrame(), new WKWebViewConfiguration { AllowsInlineMediaPlayback = configuration.AllowsInlineMediaPlayback, MediaTypesRequiringUserActionForPlayback = configuration.MediaTypesRequiringUserActionForPlayback?WKAudiovisualMediaTypes.All:WKAudiovisualMediaTypes.None })
         {
             View = view;
 
