@@ -48,7 +48,7 @@ namespace Zebble
 
             if (View.Url?.Contains(":") == true)
             {
-                Request = new NSUrlRequest(new NSUrl(View.Url));
+                Request = new NSUrlRequest(View.Url.ToNsUrl());
                 LoadRequest(Request);
             }
             else
