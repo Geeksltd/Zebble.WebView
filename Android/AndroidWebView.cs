@@ -38,7 +38,7 @@ namespace Zebble
             }
             catch (Exception ex)
             {
-                Alert.Show(ex.Message);
+                Dialogs.Current.Alert(ex.Message).RunInParallel();
             }
         }
 
