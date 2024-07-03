@@ -22,6 +22,8 @@ namespace Zebble
         {
             Result?.Dispose();
             Result = null;
+			
+			GC.SuppressFinalize(this);
         }
     }
 

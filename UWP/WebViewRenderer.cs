@@ -117,6 +117,8 @@ namespace Zebble
         {
             Result = null;
             View = null;
+			
+			GC.SuppressFinalize(this);
         }
     }
 }
