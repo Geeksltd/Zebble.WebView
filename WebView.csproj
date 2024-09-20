@@ -66,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2739.15" />
     <PackageReference Include="Zebble" Version="5.1.0" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
