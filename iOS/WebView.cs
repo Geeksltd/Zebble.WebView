@@ -1,18 +1,17 @@
-﻿namespace Zebble
-{
-    public partial class WebView
-    {
-        internal readonly AsyncEvent ScrollBouncesChanged = new AsyncEvent();
+﻿namespace Zebble;
 
-        bool scrollBounces;
-        public bool Bounces
+public partial class WebView
+{
+    internal readonly AsyncEvent ScrollBouncesChanged = new();
+
+    bool scrollBounces;
+    public bool Bounces
+    {
+        get => scrollBounces;
+        set
         {
-            get => scrollBounces;
-            set
-            {
-                scrollBounces = value;
-                ScrollBouncesChanged.Raise();
-            }
+            scrollBounces = value;
+            ScrollBouncesChanged.Raise();
         }
     }
 }

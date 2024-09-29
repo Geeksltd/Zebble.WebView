@@ -1,35 +1,34 @@
-﻿namespace Zebble
+﻿namespace Zebble;
+
+using Android.Runtime;
+using Android.Webkit;
+using Java.Interop;
+using System;
+using System.Threading.Tasks;
+
+class JavaScriptResult : Java.Lang.Object
 {
-    using Android.Runtime;
-    using Android.Webkit;
-    using Java.Interop;
-    using System;
-    using System.Threading.Tasks;
+    Zebble.WebView View;
 
-    class JavaScriptResult : Java.Lang.Object
+    public TaskCompletionSource<string> TaskSource = new();
+
+    public JavaScriptResult(Zebble.WebView view) => View = view;
+
+    [Preserve]
+    public JavaScriptResult(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
+
+    [Export, JavascriptInterface]
+    public void Run(string scriptResult)
     {
-        Zebble.WebView View;
+        var oldSource = TaskSource;
+        TaskSource = new TaskCompletionSource<string>();
+        oldSource.TrySetResult(scriptResult);
+    }
 
-        public TaskCompletionSource<string> TaskSource = new TaskCompletionSource<string>();
-
-        public JavaScriptResult(Zebble.WebView view) => View = view;
-
-        [Preserve]
-        public JavaScriptResult(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership) { }
-
-        [Export, JavascriptInterface]
-        public void Run(string scriptResult)
-        {
-            var oldSource = TaskSource;
-            TaskSource = new TaskCompletionSource<string>();
-            oldSource.TrySetResult(scriptResult);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            View = null;
-            TaskSource = null;
-            base.Dispose(disposing);
-        }
+    protected override void Dispose(bool disposing)
+    {
+        View = null;
+        TaskSource = null;
+        base.Dispose(disposing);
     }
 }

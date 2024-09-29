@@ -1,11 +1,10 @@
-﻿namespace Zebble
+﻿namespace Zebble;
+
+partial class WebView
 {
-    partial class WebView
+    public class NavigatingEventArgs
     {
-        public class NavigatingEventArgs
-        {
-            public bool Cancel { get; set; }
-            public string Url { get; set; }
-        }
+        public bool Cancel { get; set; }
+        public string Url { get; set; }
     }
 }
